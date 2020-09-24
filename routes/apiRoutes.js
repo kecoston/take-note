@@ -1,5 +1,6 @@
 
 const { notStrictEqual } = require("assert");
+const e = require("express");
 const fs = require("fs")
 
 
@@ -21,14 +22,22 @@ module.exports = function(app) {
 
         var newNote = req.body;
         newNote.routeName = newNote.title.replace(/\s+/g, "").toLowerCase();
-        
-        console.log(newNote)
-        fs.writeFile('./db/db.json', newNote)
-        
 
         let rawData = fs.readFileSync('./db/db.json');
         let notes = JSON.parse(rawData)
+        notes.push(newNote)
+
+        fs.writeFile('./db/db.json', JSON.stringify(notes), function (err) {
+            if (err) {
+                console.log(err)
+            }
+            else{
+                console.log("commit logged")
+            }
+        });
+
         return res.json(notes)
+
     });
 
 }
