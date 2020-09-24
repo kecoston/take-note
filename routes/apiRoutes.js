@@ -50,12 +50,18 @@ module.exports = function(app) {
         let rawData = fs.readFileSync('./db/db.json');
         let notes = JSON.parse(rawData)
 
-        for (var i = 0; i <notes.length; i++) {
-            if (deleteNote === notes[i].id) {
-                remove(notes[i])
-                console.log(notes)
+        const notesToKeep = notes.filter((note) => note.id !== req.params.id);
+
+        fs.writeFile('./db/db.json', JSON.stringify(notesToKeep), function (err) {
+            if (err) {
+                console.log(err)
             }
-        }
+            else{
+                console.log("commit logged")
+            }
+        });
+
+        return res.json(notes)
 
 
     })
