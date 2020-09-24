@@ -21,7 +21,7 @@ module.exports = function(app) {
     app.post("/api/notes", function(req,res) {
 
         var newNote = req.body;
-        newNote.routeName = newNote.title.replace(/\s+/g, "").toLowerCase();
+        newNote.id = newNote.title.replace(/\s+/g, "").toLowerCase();
 
         let rawData = fs.readFileSync('./db/db.json');
         let notes = JSON.parse(rawData)
@@ -39,5 +39,25 @@ module.exports = function(app) {
         return res.json(notes)
 
     });
+
+
+    app.delete("/api/notes/:id", function(req, res) {
+
+        let deleteNote = req.params.id
+
+        console.log(deleteNote)
+
+        let rawData = fs.readFileSync('./db/db.json');
+        let notes = JSON.parse(rawData)
+
+        for (var i = 0; i <notes.length; i++) {
+            if (deleteNote === notes[i].id) {
+                remove(notes[i])
+                console.log(notes)
+            }
+        }
+
+
+    })
 
 }
